@@ -56,9 +56,9 @@ class Parser {
     return this.blockQuote.test(lineText);
   }
 
-  // 解析引用区块
-  parseBlockQuote() {
-    // return `<hr/>`;
+  // 是否为无序列表
+  isUnorderedList(lineText) {
+    return this.unorderedList.test(lineText);
   }
 }
 
@@ -124,6 +124,32 @@ class Reader {
         continue;
       }
 
+      if (this.parser.isUnorderedList(this.getLineText(currentLine))) {
+        const currentLineText = this.getLineText(currentLine);
+        const preLineText =
+          currentLine >= 1 ? this.getLineText(currentLine - 1) : undefined;
+        const nextLineText = !this.reachToEndLine(currentLine + 1)
+          ? this.getLineText(currentLine + 1)
+          : undefined;
+        if (!this.parser.isUnorderedList(preLineText)) {
+          // 如果前一行不是 unorderedList
+          hasParsed.push(`<ul>`);
+        }
+
+        hasParsed.push(
+          `<li>${currentLineText.replace(/^((\*|-){1})/, "")}</li>`
+        );
+
+        if (!this.parser.isUnorderedList(nextLineText)) {
+          // 如果后一行不是 unorderedList
+          hasParsed.push(`</ul>`);
+        }
+        // hasParsed.push(this.parser.parseBlockQuote());
+        currentLine++;
+        continue;
+      }
+
+      hasParsed.push(this.getLineText(currentLine));
       currentLine++;
     }
     return hasParsed.join("");
