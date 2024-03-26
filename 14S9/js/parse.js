@@ -7,9 +7,9 @@ class Parser {
     this.strongText = /\*{2}(.*?)\*{2}/g;
     this.codeLine = /\`{1}(.*?)\`{1}/g;
     // TODO: 补充分割符正则
-    this.hr = /TODO/;
+    this.hr = /^-{3,}/;
   }
-  
+
   // 获取单行内容
   parseLineText(lineText) {
     this.lineText = lineText;
@@ -40,6 +40,26 @@ class Parser {
    *   3. 完成对图片，和文字效果的解析
    *   4. 完成对无序列表的解析
    */
+
+  // 是否为分隔符
+  isDivider() {
+    return this.hr.test(this.lineText);
+  }
+
+  // 解析分隔符
+  parseDivider() {
+    return `<hr/>`;
+  }
+
+  // 是否为引用区块
+  isBlockQuote(lineText) {
+    return this.blockQuote.test(lineText);
+  }
+
+  // 解析引用区块
+  parseBlockQuote() {
+    // return `<hr/>`;
+  }
 }
 
 class Reader {
@@ -70,6 +90,39 @@ class Reader {
         continue;
       }
       // TODO: 请完成剩余各种语法的解析
+
+      if (this.parser.isDivider()) {
+        hasParsed.push(this.parser.parseDivider());
+        currentLine++;
+        continue;
+      }
+
+      if (this.parser.isBlockQuote(this.getLineText(currentLine))) {
+        const currentLineText = this.getLineText(currentLine);
+        const preLineText =
+          currentLine >= 1 ? this.getLineText(currentLine - 1) : undefined;
+        const nextLineText = !this.reachToEndLine(currentLine + 1)
+          ? this.getLineText(currentLine + 1)
+          : undefined;
+        if (this.parser.isBlockQuote(preLineText)) {
+          // 如果前一行是blockQuote
+        } else {
+          // 如果前一行不是blockQuote
+          hasParsed.push(`<blockquote>`);
+        }
+
+        hasParsed.push(`<p>${currentLineText.replace(">", "")}</p>`);
+
+        if (this.parser.isBlockQuote(nextLineText)) {
+          // 如果后一行是blockQuote
+        } else {
+          // 如果后一行不是blockQuote
+          hasParsed.push(`</blockquote>`);
+        }
+        // hasParsed.push(this.parser.parseBlockQuote());
+        currentLine++;
+        continue;
+      }
 
       currentLine++;
     }
