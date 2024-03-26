@@ -60,6 +60,16 @@ class Parser {
   isUnorderedList(lineText) {
     return this.unorderedList.test(lineText);
   }
+
+  // 是否为图片
+  isImage() {
+    return this.image.test(this.lineText);
+  }
+
+  // 解析图片
+  parseImage() {
+    return ``;
+  }
 }
 
 class Reader {
@@ -145,6 +155,12 @@ class Reader {
           hasParsed.push(`</ul>`);
         }
         // hasParsed.push(this.parser.parseBlockQuote());
+        currentLine++;
+        continue;
+      }
+
+      if (this.parser.isImage()) {
+        hasParsed.push(this.parser.parseImage());
         currentLine++;
         continue;
       }
