@@ -88,19 +88,9 @@ class Parser {
 
   // 解析粗体或代码行
   parseStrongOrCode() {
-    let result = this.lineText;
-    const matchStrong = new RegExp(this.strongText).exec(result);
-    if (matchStrong) {
-      result = this.lineText.replace(
-        matchStrong[0],
-        `<b>${matchStrong[1]}</b>`
-      );
-    }
-    const matchCode = new RegExp(this.codeLine).exec(result);
-    if (matchCode) {
-      result = result.replace(matchCode[0], `<code>${matchCode[1]}</code>`);
-    }
-    return result;
+    return this.lineText
+      .replace(this.strongText, `<b>$1</b>`)
+      .replace(this.codeLine, `<code>$1</code>`);
   }
 }
 
