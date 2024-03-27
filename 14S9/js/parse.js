@@ -48,7 +48,7 @@ class Parser {
 
   // 解析分隔符
   parseDivider() {
-    return `<hr/>`;
+    return `<hr>`;
   }
 
   // 是否为引用区块
@@ -68,7 +68,39 @@ class Parser {
 
   // 解析图片
   parseImage() {
-    return ``;
+    const match = new RegExp(this.image).exec(this.lineText);
+    const alt = match[1];
+    const src = match[2];
+    return `<img src="${src}" alt="${alt}">`;
+  }
+
+  // 是否为图片
+  isImage() {
+    return this.image.test(this.lineText);
+  }
+
+  // 是否为粗体或代码行
+  isStrongOrCode() {
+    return (
+      this.strongText.test(this.lineText) || this.codeLine.test(this.lineText)
+    );
+  }
+
+  // 解析粗体或代码行
+  parseStrongOrCode() {
+    let result = this.lineText;
+    const matchStrong = new RegExp(this.strongText).exec(result);
+    if (matchStrong) {
+      result = this.lineText.replace(
+        matchStrong[0],
+        `<b>${matchStrong[1]}</b>`
+      );
+    }
+    const matchCode = new RegExp(this.codeLine).exec(result);
+    if (matchCode) {
+      result = result.replace(matchCode[0], `<code>${matchCode[1]}</code>`);
+    }
+    return result;
   }
 }
 
@@ -121,7 +153,7 @@ class Reader {
           hasParsed.push(`<blockquote>`);
         }
 
-        hasParsed.push(`<p>${currentLineText.replace(">", "")}</p>`);
+        hasParsed.push(`<p>${currentLineText.replace(">", "").trim()}</p>`);
 
         if (this.parser.isBlockQuote(nextLineText)) {
           // 如果后一行是blockQuote
@@ -147,7 +179,7 @@ class Reader {
         }
 
         hasParsed.push(
-          `<li>${currentLineText.replace(/^((\*|-){1})/, "")}</li>`
+          `<li>${currentLineText.replace(/^((\*|-){1})/, "").trim()}</li>`
         );
 
         if (!this.parser.isUnorderedList(nextLineText)) {
@@ -161,6 +193,12 @@ class Reader {
 
       if (this.parser.isImage()) {
         hasParsed.push(this.parser.parseImage());
+        currentLine++;
+        continue;
+      }
+
+      if (this.parser.isStrongOrCode()) {
+        hasParsed.push(this.parser.parseStrongOrCode());
         currentLine++;
         continue;
       }
