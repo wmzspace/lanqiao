@@ -1,0 +1,81 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #f4f4f4;
+    display: flex;
+}
+
+ul {
+    list-style: none;
+}
+
+input {
+    outline: none;
+    min-width: 100px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 5px;
+    background-color: #ae6868;
+    border: 1px solid #ccc;
+    text-indent: 1em;
+}
+
+button {
+    width: 100px;
+    height: 30px;
+    line-height: 30px;
+    background-color: #e75656;
+    cursor: pointer;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin: 10px auto 0 auto
+}
+
+.container {
+    width: 600px;
+    margin: 100px auto;
+    background-color: #dfc6c6;
+    padding: 20px 20px 50px 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 5px 3px #ccc, 0 0 5px 3px #cf1a1a;
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+}
+
+.container .top h1 {
+    text-align: center;
+}
+
+.container .top label {
+    font-size: 1.1em;
+    letter-spacing: 5px;
+    margin: 5px 0;
+}
+
+.container .top form {
+    display: flex;
+    flex-direction: column;
+}
+
+.container .bottom {
+    margin-top: 20px;
+}
+
+.container .bottom table {
+    width: 100%;
+}
+
+.container .bottom table caption,
+section.container table caption {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+}
+
+table td {
+    text-align: center;
+}
