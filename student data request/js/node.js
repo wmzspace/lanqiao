@@ -60,6 +60,7 @@ const server = http.createServer((req, res) => {
     });
   } else if (req.url === "/student/add" && req.method === "POST") {
     console.log(req.body)
+    send(res, 0, "", null);
   }
 });
 

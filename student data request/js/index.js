@@ -50,7 +50,7 @@ async function init() {
   if (serverRes.ok) {
     const resData = await serverRes.json();
     res = parseRes(resData.data);
-    render(res)
+    render(res);
   }
   submitBtn.addEventListener("click", handleAddStudent);
 }
@@ -59,7 +59,20 @@ async function handleAddStudent(e) {
   e.preventDefault();
   // TODO 你需要将表单中所有的文本框的值获取到，然后向服务器请求，拿到服务器数据调用渲染方法，注意render函数需要传入数组
   let data;
-  console.log(1)
+  const newData = {
+    name: nameDom.value,
+    age: ageDom.value,
+    phone: phoneDom.value,
+  };
+  const serverRes = await fetch("/student/add", {
+    method: "POST",
+    body: JSON.stringify(newData)
+  });
+  if (serverRes.ok) {
+    const resData = await serverRes.json();
+    data = parseRes(resData.data);
+    render(data);
+  }
 }
 
 /**
