@@ -59,8 +59,14 @@ const server = http.createServer((req, res) => {
       }
     });
   } else if (req.url === "/student/add" && req.method === "POST") {
-    console.log(req.body)
-    send(res, 0, "", null);
+    let body = "";
+    req.on('data', (chunk) => {
+      body += chunk;
+    });
+    req.on('end', () => {
+      // Get full body
+      send(res, 0, "", null);
+    });
   }
 });
 
