@@ -51,21 +51,22 @@ const server = http.createServer((req, res) => {
   // 1.处理GET请求请通过fs模块获取学生数据并调用send方法，传入对应的参数将数据响应给客户端
   // 2.处理POST请求，请处理请求数据，并响应给客户端
   if (req.url === "/student" && req.method === "GET") {
-    fs.readFile("js/data.js", "utf-8", function (err, data) {
+    fs.readFile("./data.js", "utf-8", function (err, data) {
       if (err) {
         send(res, 404, err.message, null);
       } else {
         send(res, 0, "", data);
       }
     });
-  } else if (req.url === "/student/add" && req.method === "POST") {
+  }
+  else if (req.url === "/student/add" && req.method === "POST") {
     let body = "";
     req.on('data', (chunk) => {
       body += chunk;
     });
     req.on('end', () => {
       // Get full body
-      send(res, 0, "", null);
+      send(res, 0, "", body);
     });
   }
 });

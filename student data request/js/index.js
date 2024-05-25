@@ -48,8 +48,8 @@ async function init() {
   // TODO 请求服务器拿到数据，并完成界面渲染，请求学生数据时需要调用上面提供的方法解析响应体中的data数据，调用渲染方法，注意render函数需要传入数组
   const serverRes = await fetch("/student");
   if (serverRes.ok) {
-    const resData = await serverRes.json();
-    res = parseRes(resData.data);
+    const { data } = await serverRes.json();
+    res = parseRes(data);
     render(res);
   }
   submitBtn.addEventListener("click", handleAddStudent);
@@ -69,9 +69,8 @@ async function handleAddStudent(e) {
     body: JSON.stringify(newData)
   });
   if (serverRes.ok) {
-    const resData = await serverRes.json();
-    data = parseRes(resData.data);
-    render(data);
+    data = await serverRes.json();
+    render([parseRes(data.data)]);
   }
 }
 
