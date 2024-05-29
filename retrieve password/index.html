@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="./css/element-plus@2.3.7/index.css">
+  <link rel="stylesheet" href="./css/index.css">
+  <script src="./js/vue.global.js"></script>
+  <script src="./js/vue3-sfc-loader.js"></script>
+  <script src="./css/element-plus@2.3.7/index.full.js"></script>
+  <script src="./js/index.js"></script>
+  <title>找回密码</title>
+</head>
+
+<body>
+  <div id="app">
+    <div class="title">
+      <span>找回密码</span>
+      <span>Retrieve the password</span>
+    </div>
+    <steps :active="active" :status="status"></steps>
+    <component @show="changeShowName" @next="changeSteps" @change="changeStatus" :is="showName"></component>
+  </div>
+</body>
+<script>
+  const { loadModule } = window['vue3-sfc-loader'];
+  const { createApp, reactive, ref, onMounted, watch, defineProps, toRefs } = Vue
+  const app = Vue.createApp({
+    setup() {
+      let data = reactive({
+        // active:当前所激活步骤的索引,第一步（账号核实）为0，第二步（身份）为1···
+        active: 0, 
+        // showName:当前component展示的组件
+        showName: 'account',  
+        // status:当前步骤的状态，值process时对应步骤字体颜色为黑色，值为wait时为灰色，值为error时为红色，值为success时为绿色，值为finish时为蓝色
+        status: "process" 
+      })
+
+      // 改变data.showName值的函数
+      const changeShowName = (val) => {
+        data.showName = val
+      }
+
+      // 改变data.status值的函数
+      const changeStatus = (val) => {
+        data.status = val
+      }
+
+      // 改变data.active值的函数
+      const changeSteps = (val) => {
+        data.active = parseInt(val)
+      }
+
+      return {
+        ...toRefs(data),
+        changeShowName,
+        changeSteps,
+        changeStatus
+      }
+    },
+    components: {
+      "steps": Vue.defineAsyncComponent(() => loadModule('./component/steps.vue', options)),
+      'account': Vue.defineAsyncComponent(() => loadModule('./component/account.vue', options)),
+      "check": Vue.defineAsyncComponent(() => loadModule('./component/check.vue', options)),
+      "modify": Vue.defineAsyncComponent(() => loadModule('./component/modify.vue', options)),
+      "success": Vue.defineAsyncComponent(() => loadModule('./component/success.vue', options))
+    }
+  });
+  app.use(ElementPlus)
+  app.mount('#app');
+
+</script>
+
+</html>
